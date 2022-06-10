@@ -195,7 +195,6 @@ class _MyTimerState extends State<MyTimer> {
               child: const Text('Tap me'),
               onPressed: startTimer,
             ),
-            Text('Checking github time 2'),
           ],
         ),
       ),
