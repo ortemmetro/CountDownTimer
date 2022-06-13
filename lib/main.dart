@@ -55,15 +55,18 @@ class _MyTimerState extends State<MyTimer> {
   final _timerClockTextStyle = const TextStyle(fontSize: 50);
 
   Timer _timer = Timer(const Duration(seconds: 0), () {});
-  int _startSeconds = 10;
+  double _startSeconds = 0;
   String _ifDoubleIntegerSeconds = '';
-  int _startMinutes = 1;
+  double _startMinutes = 0;
   String _ifDoubleIntegerMinutes = '';
-  int _startHours = 0;
+  double _startHours = 0;
   String _ifDoubleIntegerHours = '';
-  int _startDays = 0;
-  int _startMonths = 0;
-  int _startYears = 2;
+  double _startDays = 0;
+  double _startMonths = 0;
+  double _startYears = 0;
+
+  DateTime? _dateTime;
+  int? _differenceInTime;
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
@@ -75,22 +78,22 @@ class _MyTimerState extends State<MyTimer> {
             _startMinutes--;
             _startSeconds = 59;
           });
-          if(_startMinutes == -1){
+          if (_startMinutes == -1) {
             setState(() {
               _startHours--;
               _startMinutes = 59;
             });
-            if(_startHours == -1){
+            if (_startHours == -1) {
               setState(() {
                 _startDays--;
                 _startHours = 23;
               });
-              if(_startDays == -1){
+              if (_startDays == -1) {
                 setState(() {
                   _startMonths--;
                   _startDays = 29;
                 });
-                if(_startMonths == -1){
+                if (_startMonths == -1) {
                   setState(() {
                     _startYears--;
                     _startMonths = 12;
@@ -134,7 +137,6 @@ class _MyTimerState extends State<MyTimer> {
             _ifDoubleIntegerHours = '';
           });
         }
-
       },
     );
   }
@@ -148,13 +150,13 @@ class _MyTimerState extends State<MyTimer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 20),
+      padding: const EdgeInsets.only(top: 20),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.purple, Colors.blue],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
-          ),
+        ),
       ),
       child: Center(
         child: Column(
@@ -194,6 +196,36 @@ class _MyTimerState extends State<MyTimer> {
             ElevatedButton(
               child: const Text('Tap me'),
               onPressed: startTimer,
+            ),
+            Text(
+              _dateTime == null
+                  ? 'Choose your event date'
+                  : '$_differenceInTime',
+              style: const TextStyle(
+                fontSize: 30,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(3000),
+                ).then((date) {
+                  setState(() {
+                    _differenceInTime = date?.difference(DateTime.now()).inSeconds;
+                    _dateTime = date;
+                    _startYears = (_differenceInTime! ~/ 31556952.0).toDouble();
+                    _startMonths = ((_differenceInTime! % 31556952.0) ~/ 2592000.0).toDouble();
+                    _startDays = (((_differenceInTime! % 31556952.0) % 2592000.0) ~/ 86400.0).toDouble();
+                    _startHours = ((((_differenceInTime! % 31556952.0) % 2592000.0) % 86400.0) ~/ 3600).toDouble();
+                    _startMinutes = (((((_differenceInTime! % 31556952.0) % 2592000.0) % 86400.0) % 3600) ~/ 60).toDouble();
+                    _startSeconds = ((((((_differenceInTime! % 31556952.0) % 2592000.0) % 86400.0) % 3600) % 60) ~/ 60).toDouble();
+                  });
+                });
+              },
+              child: Text('Pick date'),
             ),
           ],
         ),
