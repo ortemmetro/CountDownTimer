@@ -33,7 +33,15 @@ class MyApp extends StatelessWidget {
           ),
           Column(
             children: <Widget>[
-              Center(
+              Container(
+                padding: const EdgeInsets.only(top: 20),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.purple, Colors.blue],
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.topRight,
+                  ),
+                ),
                 child: MyTimer(),
               ),
             ],
@@ -67,6 +75,10 @@ class _MyTimerState extends State<MyTimer> {
 
   DateTime? _dateTime;
   int? _differenceInTime;
+
+  bool ifVisible = false;
+
+  String textAboveButton = 'Pick your event date:';
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
@@ -149,60 +161,42 @@ class _MyTimerState extends State<MyTimer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 20),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.purple, Colors.blue],
-          begin: Alignment.bottomLeft,
-          end: Alignment.topRight,
-        ),
-      ),
-      child: Center(
+    return Center(
         child: Column(
           children: [
-            const Text(
-              'Time left till your birthday:',
+            Text(
+              textAboveButton,
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
             ),
-            Column(
-              children: [
-                Text(
-                  '$_startYears Years',
-                  style: _timerClockTextStyle,
-                ),
-                Text(
-                  '$_startMonths Months',
-                  style: _timerClockTextStyle,
-                ),
-                Text(
-                  '$_startDays Days',
-                  style: _timerClockTextStyle,
-                ),
-                Text(
-                  '$_ifDoubleIntegerHours$_startHours Hours',
-                  style: _timerClockTextStyle,
-                ),
-                Text(
-                  '$_ifDoubleIntegerMinutes$_startMinutes Minutes',
-                  style: _timerClockTextStyle,
-                ),
-                Text(
-                  '$_ifDoubleIntegerSeconds$_startSeconds Seconds',
-                  style: _timerClockTextStyle,
-                ),
-              ],
-            ),
-            ElevatedButton(
-              child: const Text('Tap me'),
-              onPressed: startTimer,
-            ),
-            Text(
-              _dateTime == null
-                  ? 'Choose your event date'
-                  : '$_differenceInTime',
-              style: const TextStyle(
-                fontSize: 30,
+            Visibility(
+              visible: ifVisible,
+              child: Column(
+                children: [
+                  Text(
+                    '${_startYears.toInt()} Years',
+                    style: _timerClockTextStyle,
+                  ),
+                  Text(
+                    '${_startMonths.toInt()} Months',
+                    style: _timerClockTextStyle,
+                  ),
+                  Text(
+                    '${_startDays.toInt()} Days',
+                    style: _timerClockTextStyle,
+                  ),
+                  Text(
+                    '$_ifDoubleIntegerHours${_startHours.toInt()} Hours',
+                    style: _timerClockTextStyle,
+                  ),
+                  Text(
+                    '$_ifDoubleIntegerMinutes${_startMinutes.toInt()} Minutes',
+                    style: _timerClockTextStyle,
+                  ),
+                  Text(
+                    '$_ifDoubleIntegerSeconds${_startSeconds.toInt()} Seconds',
+                    style: _timerClockTextStyle,
+                  ),
+                ],
               ),
             ),
             ElevatedButton(
@@ -214,22 +208,50 @@ class _MyTimerState extends State<MyTimer> {
                   lastDate: DateTime(3000),
                 ).then((date) {
                   setState(() {
-                    _differenceInTime = date?.difference(DateTime.now()).inSeconds;
+                    _differenceInTime =
+                        date?.difference(DateTime.now()).inSeconds;
                     _dateTime = date;
                     _startYears = (_differenceInTime! ~/ 31556952.0).toDouble();
-                    _startMonths = ((_differenceInTime! % 31556952.0) ~/ 2592000.0).toDouble();
-                    _startDays = (((_differenceInTime! % 31556952.0) % 2592000.0) ~/ 86400.0).toDouble();
-                    _startHours = ((((_differenceInTime! % 31556952.0) % 2592000.0) % 86400.0) ~/ 3600).toDouble();
-                    _startMinutes = (((((_differenceInTime! % 31556952.0) % 2592000.0) % 86400.0) % 3600) ~/ 60).toDouble();
-                    _startSeconds = ((((((_differenceInTime! % 31556952.0) % 2592000.0) % 86400.0) % 3600) % 60) ~/ 60).toDouble();
+                    _startMonths =
+                        ((_differenceInTime! % 31556952.0) ~/ 2592000.0)
+                            .toDouble();
+                    _startDays =
+                        (((_differenceInTime! % 31556952.0) % 2592000.0) ~/
+                                86400.0)
+                            .toDouble();
+                    _startHours =
+                        ((((_differenceInTime! % 31556952.0) % 2592000.0) %
+                                    86400.0) ~/
+                                3600)
+                            .toDouble();
+                    _startMinutes =
+                        (((((_differenceInTime! % 31556952.0) % 2592000.0) %
+                                        86400.0) %
+                                    3600) ~/
+                                60)
+                            .toDouble();
+                    _startSeconds =
+                        ((((((_differenceInTime! % 31556952.0) % 2592000.0) %
+                                            86400.0) %
+                                        3600) %
+                                    60) ~/
+                                60)
+                            .toDouble();
+                    ifVisible = true;
+                    textAboveButton = 'Time till your event:';
                   });
+                  startTimer();
                 });
               },
-              child: Text('Pick date'),
+              child: const Text(
+                'Pick date',
+                style: TextStyle(
+                  fontSize: 25,
+                ),
+              ),
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
