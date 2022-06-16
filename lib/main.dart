@@ -9,46 +9,47 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
-      appBar: AppBar(
-        leading: Icon(Icons.menu),
-        title: Text('Timer'),
-        backgroundColor: Colors.purple,
-      ),
-      body: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-            color: Colors.greenAccent,
-            height: 200,
-            child: Center(
-              child: Text(
-                'Timer',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+          appBar: AppBar(
+            leading: Icon(Icons.menu),
+            title: Text('Timer'),
+            backgroundColor: Colors.purple,
           ),
-          Column(
+          body: Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
-                padding: const EdgeInsets.only(top: 20),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.purple, Colors.blue],
-                    begin: Alignment.bottomLeft,
-                    end: Alignment.topRight,
+                color: Colors.greenAccent,
+                height: 200,
+                child: Center(
+                  child: Text(
+                    'Timer',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-                child: MyTimer(),
+              ),
+              Column(
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.only(top: 20),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.purple, Colors.blue],
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                      ),
+                    ),
+                    child: MyTimer(),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
-    ));
+        ));
   }
 }
 
@@ -76,9 +77,13 @@ class _MyTimerState extends State<MyTimer> {
   DateTime? _dateTime;
   int? _differenceInTime;
 
-  bool ifVisible = false;
+  bool _ifVisible = false;
 
-  String textAboveButton = 'Pick your event date:';
+  String _textAboveButton = 'Pick your event date:';
+
+  final _textController = TextEditingController();
+
+  String _eventName = '';
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
@@ -162,96 +167,111 @@ class _MyTimerState extends State<MyTimer> {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Column(
-          children: [
-            Text(
-              textAboveButton,
+      child: Column(
+        children: [
+          Text(
+            _textAboveButton,
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+          ),
+          Visibility(
+            visible: _ifVisible,
+            child: Column(
+              children: [
+                Text(
+                  '${_startYears.toInt()} Years',
+                  style: _timerClockTextStyle,
+                ),
+                Text(
+                  '${_startMonths.toInt()} Months',
+                  style: _timerClockTextStyle,
+                ),
+                Text(
+                  '${_startDays.toInt()} Days',
+                  style: _timerClockTextStyle,
+                ),
+                Text(
+                  '$_ifDoubleIntegerHours${_startHours.toInt()} Hours',
+                  style: _timerClockTextStyle,
+                ),
+                Text(
+                  '$_ifDoubleIntegerMinutes${_startMinutes.toInt()} Minutes',
+                  style: _timerClockTextStyle,
+                ),
+                Text(
+                  '$_ifDoubleIntegerSeconds${_startSeconds.toInt()} Seconds',
+                  style: _timerClockTextStyle,
+                ),
+              ],
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime.now(),
+                lastDate: DateTime(3000),
+              ).then((date) {
+                setState(() {
+                  _differenceInTime =
+                      date?.difference(DateTime.now()).inSeconds;
+                  _dateTime = date;
+                  _startYears = (_differenceInTime! ~/ 31556952.0).toDouble();
+                  _startMonths =
+                      ((_differenceInTime! % 31556952.0) ~/ 2592000.0)
+                          .toDouble();
+                  _startDays =
+                      (((_differenceInTime! % 31556952.0) % 2592000.0) ~/
+                              86400.0)
+                          .toDouble();
+                  _startHours =
+                      ((((_differenceInTime! % 31556952.0) % 2592000.0) %
+                                  86400.0) ~/
+                              3600)
+                          .toDouble();
+                  _startMinutes =
+                      (((((_differenceInTime! % 31556952.0) % 2592000.0) %
+                                      86400.0) %
+                                  3600) ~/
+                              60)
+                          .toDouble();
+                  _startSeconds =
+                      ((((((_differenceInTime! % 31556952.0) % 2592000.0) %
+                                          86400.0) %
+                                      3600) %
+                                  60) ~/
+                              60)
+                          .toDouble();
+                  _ifVisible = true;
+                  _textAboveButton = 'Time till your $_eventName:';
+                });
+                startTimer();
+              });
+            },
+            child: const Text(
+              'Pick date',
+              style: TextStyle(
+                fontSize: 25,
+              ),
+            ),
+          ),
+          Text('Enter your event name:', style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600)),
+          TextField(
+            decoration: InputDecoration(
+              
+            ),
+            maxLength: 500,
+            controller: _textController,
+          ),
+          ElevatedButton(
+            onPressed: startTimer,
+            child: Text(
+              'Create new timer',
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
             ),
-            Visibility(
-              visible: ifVisible,
-              child: Column(
-                children: [
-                  Text(
-                    '${_startYears.toInt()} Years',
-                    style: _timerClockTextStyle,
-                  ),
-                  Text(
-                    '${_startMonths.toInt()} Months',
-                    style: _timerClockTextStyle,
-                  ),
-                  Text(
-                    '${_startDays.toInt()} Days',
-                    style: _timerClockTextStyle,
-                  ),
-                  Text(
-                    '$_ifDoubleIntegerHours${_startHours.toInt()} Hours',
-                    style: _timerClockTextStyle,
-                  ),
-                  Text(
-                    '$_ifDoubleIntegerMinutes${_startMinutes.toInt()} Minutes',
-                    style: _timerClockTextStyle,
-                  ),
-                  Text(
-                    '$_ifDoubleIntegerSeconds${_startSeconds.toInt()} Seconds',
-                    style: _timerClockTextStyle,
-                  ),
-                ],
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(3000),
-                ).then((date) {
-                  setState(() {
-                    _differenceInTime =
-                        date?.difference(DateTime.now()).inSeconds;
-                    _dateTime = date;
-                    _startYears = (_differenceInTime! ~/ 31556952.0).toDouble();
-                    _startMonths =
-                        ((_differenceInTime! % 31556952.0) ~/ 2592000.0)
-                            .toDouble();
-                    _startDays =
-                        (((_differenceInTime! % 31556952.0) % 2592000.0) ~/
-                                86400.0)
-                            .toDouble();
-                    _startHours =
-                        ((((_differenceInTime! % 31556952.0) % 2592000.0) %
-                                    86400.0) ~/
-                                3600)
-                            .toDouble();
-                    _startMinutes =
-                        (((((_differenceInTime! % 31556952.0) % 2592000.0) %
-                                        86400.0) %
-                                    3600) ~/
-                                60)
-                            .toDouble();
-                    _startSeconds =
-                        ((((((_differenceInTime! % 31556952.0) % 2592000.0) %
-                                            86400.0) %
-                                        3600) %
-                                    60) ~/
-                                60)
-                            .toDouble();
-                    ifVisible = true;
-                    textAboveButton = 'Time till your event:';
-                  });
-                  startTimer();
-                });
-              },
-              child: const Text(
-                'Pick date',
-                style: TextStyle(
-                  fontSize: 25,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
   }
 }
