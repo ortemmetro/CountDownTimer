@@ -77,7 +77,9 @@ class _MyTimerState extends State<MyTimer> {
   DateTime? _dateTime;
   int? _differenceInTime;
 
-  bool _ifVisible = false;
+  bool _ifVisibleTimer = false;
+
+  bool _ifVisibleForm = true;
 
   String _textAboveButton = 'Pick your event date:';
 
@@ -85,7 +87,38 @@ class _MyTimerState extends State<MyTimer> {
 
   String _eventName = '';
 
+  DateTime? _userDate;
+
   void startTimer() {
+    setState(() {
+      _differenceInTime = _userDate?.difference(DateTime.now()).inSeconds;
+      _dateTime = _userDate;
+      _startYears = (_differenceInTime! ~/ 31556952.0).toDouble();
+      _startMonths =
+          ((_differenceInTime! % 31556952.0) ~/ 2592000.0).toDouble();
+      _startDays = (((_differenceInTime! % 31556952.0) % 2592000.0) ~/ 86400.0)
+          .toDouble();
+      _startHours =
+          ((((_differenceInTime! % 31556952.0) % 2592000.0) % 86400.0) ~/ 3600)
+              .toDouble();
+      _startMinutes =
+          (((((_differenceInTime! % 31556952.0) % 2592000.0) % 86400.0) %
+                      3600) ~/
+                  60)
+              .toDouble();
+      _startSeconds =
+          ((((((_differenceInTime! % 31556952.0) % 2592000.0) % 86400.0) %
+                          3600) %
+                      60) ~/
+                  60)
+              .toDouble();
+
+      _ifVisibleTimer = true;
+      _ifVisibleForm = false;
+      _eventName = _textController.text;
+      _textAboveButton = 'Time till your $_eventName:';
+    });
+
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
@@ -125,7 +158,7 @@ class _MyTimerState extends State<MyTimer> {
           });
         }
 
-        if (_startSeconds.toString().length < 2) {
+        if (_startSeconds.toInt().toString().length < 2) {
           setState(() {
             _ifDoubleIntegerSeconds = '0';
           });
@@ -135,7 +168,7 @@ class _MyTimerState extends State<MyTimer> {
           });
         }
 
-        if (_startMinutes.toString().length < 2) {
+        if (_startMinutes.toInt().toString().length < 2) {
           setState(() {
             _ifDoubleIntegerMinutes = '0';
           });
@@ -145,7 +178,7 @@ class _MyTimerState extends State<MyTimer> {
           });
         }
 
-        if (_startHours.toString().length < 2) {
+        if (_startHours.toInt().toString().length < 2) {
           setState(() {
             _ifDoubleIntegerHours = '0';
           });
@@ -174,7 +207,7 @@ class _MyTimerState extends State<MyTimer> {
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
           ),
           Visibility(
-            visible: _ifVisible,
+            visible: _ifVisibleTimer,
             child: Column(
               children: [
                 Text(
@@ -204,70 +237,46 @@ class _MyTimerState extends State<MyTimer> {
               ],
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              showDatePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime.now(),
-                lastDate: DateTime(3000),
-              ).then((date) {
-                setState(() {
-                  _differenceInTime =
-                      date?.difference(DateTime.now()).inSeconds;
-                  _dateTime = date;
-                  _startYears = (_differenceInTime! ~/ 31556952.0).toDouble();
-                  _startMonths =
-                      ((_differenceInTime! % 31556952.0) ~/ 2592000.0)
-                          .toDouble();
-                  _startDays =
-                      (((_differenceInTime! % 31556952.0) % 2592000.0) ~/
-                              86400.0)
-                          .toDouble();
-                  _startHours =
-                      ((((_differenceInTime! % 31556952.0) % 2592000.0) %
-                                  86400.0) ~/
-                              3600)
-                          .toDouble();
-                  _startMinutes =
-                      (((((_differenceInTime! % 31556952.0) % 2592000.0) %
-                                      86400.0) %
-                                  3600) ~/
-                              60)
-                          .toDouble();
-                  _startSeconds =
-                      ((((((_differenceInTime! % 31556952.0) % 2592000.0) %
-                                          86400.0) %
-                                      3600) %
-                                  60) ~/
-                              60)
-                          .toDouble();
-                  _ifVisible = true;
-                  _textAboveButton = 'Time till your $_eventName:';
-                });
-                startTimer();
-              });
-            },
-            child: const Text(
-              'Pick date',
-              style: TextStyle(
-                fontSize: 25,
-              ),
-            ),
-          ),
-          Text('Enter your event name:', style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600)),
-          TextField(
-            decoration: InputDecoration(
-              
-            ),
-            maxLength: 500,
-            controller: _textController,
-          ),
-          ElevatedButton(
-            onPressed: startTimer,
-            child: Text(
-              'Create new timer',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+          Visibility(
+            visible: _ifVisibleForm,
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(3000),
+                    ).then((date) {
+                      setState(() {
+                        _userDate = date;
+                      });
+                    });
+                  },
+                  child: const Text(
+                    'Pick date',
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),
+                  ),
+                ),
+                Text('Enter your event name:',
+                    style:
+                        TextStyle(fontSize: 25, fontWeight: FontWeight.w600)),
+                TextField(
+                  decoration: InputDecoration(),
+                  maxLength: 500,
+                  controller: _textController,
+                ),
+                ElevatedButton(
+                  onPressed: startTimer,
+                  child: Text(
+                    'Create new timer',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
