@@ -35,7 +35,6 @@ class MyApp extends StatelessWidget {
               Column(
                 children: <Widget>[
                   Container(
-                    padding: const EdgeInsets.only(top: 20),
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         colors: [Colors.purple, Colors.blue],
@@ -116,7 +115,7 @@ class _MyTimerState extends State<MyTimer> {
       _ifVisibleTimer = true;
       _ifVisibleForm = false;
       _eventName = _textController.text;
-      _textAboveButton = 'Time till your $_eventName:';
+      _textAboveButton = 'Time till $_eventName:';
     });
 
     const oneSec = Duration(seconds: 1);
