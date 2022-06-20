@@ -17,10 +17,12 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.purple,
           ),
           body: Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
               Container(
                 color: Colors.greenAccent,
+                width: double.infinity,
                 height: 200,
                 child: Center(
                   child: Text(
@@ -32,19 +34,24 @@ class MyApp extends StatelessWidget {
                   ),
                 ),
               ),
-              Column(
-                children: <Widget>[
-                  Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.purple, Colors.blue],
-                        begin: Alignment.bottomLeft,
-                        end: Alignment.topRight,
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.purple, Colors.blue],
+                            begin: Alignment.bottomLeft,
+                            end: Alignment.topRight,
+                          ),
+                        ),
+                        child: MyTimer(),
                       ),
                     ),
-                    child: MyTimer(),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -201,9 +208,12 @@ class _MyTimerState extends State<MyTimer> {
     return Center(
       child: Column(
         children: [
-          Text(
-            _textAboveButton,
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+            child: Text(
+              _textAboveButton,
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+            ),
           ),
           Visibility(
             visible: _ifVisibleTimer,
@@ -240,23 +250,26 @@ class _MyTimerState extends State<MyTimer> {
             visible: _ifVisibleForm,
             child: Column(
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime(3000),
-                    ).then((date) {
-                      setState(() {
-                        _userDate = date;
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(3000),
+                      ).then((date) {
+                        setState(() {
+                          _userDate = date;
+                        });
                       });
-                    });
-                  },
-                  child: const Text(
-                    'Pick date',
-                    style: TextStyle(
-                      fontSize: 25,
+                    },
+                    child: const Text(
+                      'Pick date',
+                      style: TextStyle(
+                        fontSize: 25,
+                      ),
                     ),
                   ),
                 ),
