@@ -11,24 +11,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
+          drawer: NavDrawer(),
           appBar: AppBar(
-            leading: Icon(Icons.menu),
-            title: Text('Timer'),
-            backgroundColor: Colors.purple,
+            title: Text('MyTimer'),
+            backgroundColor: Colors.black,
           ),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                color: Colors.greenAccent,
+                color: Colors.white,
                 width: double.infinity,
                 height: 200,
                 child: Center(
                   child: Text(
-                    'Timer',
+                    'MyTimer',
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 60,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -42,9 +42,9 @@ class MyApp extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [Colors.purple, Colors.blue],
+                            colors: [Colors.grey, Colors.white],
                             begin: Alignment.bottomLeft,
-                            end: Alignment.topRight,
+                            end: Alignment.topCenter,
                           ),
                         ),
                         child: MyTimer(),
@@ -79,6 +79,12 @@ class _MyTimerState extends State<MyTimer> {
   double _startDays = 0;
   double _startMonths = 0;
   double _startYears = 0;
+
+  bool _ifVisibleTimerYears = false;
+  bool _ifVisibleTimerMonths = false;
+  bool _ifVisibleTimerDays = false;
+  bool _ifVisibleTimerHours = false;
+  bool _ifVisibleTimerMinutes = false;
 
   DateTime? _dateTime;
   int? _differenceInTime;
@@ -123,6 +129,36 @@ class _MyTimerState extends State<MyTimer> {
       _ifVisibleForm = false;
       _eventName = _textController.text;
       _textAboveButton = 'Time till $_eventName:';
+
+      if (_startYears == 0) {
+        _ifVisibleTimerYears = false;
+      } else {
+        _ifVisibleTimerYears = true;
+      }
+
+      if (_startMonths == 0) {
+        _ifVisibleTimerMonths = false;
+      } else {
+        _ifVisibleTimerMonths = true;
+      }
+
+      if (_startDays == 0) {
+        _ifVisibleTimerDays = false;
+      } else {
+        _ifVisibleTimerDays = true;
+      }
+
+      if (_startHours == 0) {
+        _ifVisibleTimerHours = false;
+      } else {
+        _ifVisibleTimerHours = true;
+      }
+
+      if (_startMinutes == 0) {
+        _ifVisibleTimerMinutes = false;
+      } else {
+        _ifVisibleTimerMinutes = true;
+      }
     });
 
     const oneSec = Duration(seconds: 1);
@@ -212,32 +248,47 @@ class _MyTimerState extends State<MyTimer> {
             margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
             child: Text(
               _textAboveButton,
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
             ),
           ),
           Visibility(
             visible: _ifVisibleTimer,
             child: Column(
               children: [
-                Text(
-                  '${_startYears.toInt()} Years',
-                  style: _timerClockTextStyle,
+                Visibility(
+                  visible: _ifVisibleTimerYears,
+                  child: Text(
+                    '${_startYears.toInt()} Years',
+                    style: _timerClockTextStyle,
+                  ),
                 ),
-                Text(
-                  '${_startMonths.toInt()} Months',
-                  style: _timerClockTextStyle,
+                Visibility(
+                  visible: _ifVisibleTimerMonths,
+                  child: Text(
+                    '${_startMonths.toInt()} Months',
+                    style: _timerClockTextStyle,
+                  ),
                 ),
-                Text(
-                  '${_startDays.toInt()} Days',
-                  style: _timerClockTextStyle,
+                Visibility(
+                  visible: _ifVisibleTimerDays,
+                  child: Text(
+                    '${_startDays.toInt()} Days',
+                    style: _timerClockTextStyle,
+                  ),
                 ),
-                Text(
-                  '$_ifDoubleIntegerHours${_startHours.toInt()} Hours',
-                  style: _timerClockTextStyle,
+                Visibility(
+                  visible: _ifVisibleTimerHours,
+                  child: Text(
+                    '$_ifDoubleIntegerHours${_startHours.toInt()} Hours',
+                    style: _timerClockTextStyle,
+                  ),
                 ),
-                Text(
-                  '$_ifDoubleIntegerMinutes${_startMinutes.toInt()} Minutes',
-                  style: _timerClockTextStyle,
+                Visibility(
+                  visible: _ifVisibleTimerMinutes,
+                  child: Text(
+                    '$_ifDoubleIntegerMinutes${_startMinutes.toInt()} Minutes',
+                    style: _timerClockTextStyle,
+                  ),
                 ),
                 Text(
                   '$_ifDoubleIntegerSeconds${_startSeconds.toInt()} Seconds',
@@ -253,6 +304,15 @@ class _MyTimerState extends State<MyTimer> {
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
                   child: ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                        side: BorderSide(color: Colors.black, width: 2),
+                      )),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
                     onPressed: () {
                       showDatePicker(
                         context: context,
@@ -265,10 +325,14 @@ class _MyTimerState extends State<MyTimer> {
                         });
                       });
                     },
-                    child: const Text(
-                      'Pick date',
-                      style: TextStyle(
-                        fontSize: 25,
+                    child: const Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Text(
+                        'Pick date',
+                        style: TextStyle(
+                          fontSize: 25,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ),
@@ -282,15 +346,74 @@ class _MyTimerState extends State<MyTimer> {
                   controller: _textController,
                 ),
                 ElevatedButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      side: BorderSide(color: Colors.black, width: 2),
+                    )),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
+                  ),
                   onPressed: startTimer,
-                  child: Text(
-                    'Create new timer',
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Text(
+                      'Create new timer',
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class NavDrawer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: const <Widget>[
+          DrawerHeader(
+            child: Text(
+              'Side menu',
+              style: TextStyle(color: Colors.black, fontSize: 25),
+            ),
+            decoration: BoxDecoration(
+              color: Colors.green,
+              image: DecorationImage(
+                fit: BoxFit.fill,
+                image: AssetImage('assets/images/clockwatch.jpg'))),
+          ),
+          ListTile(
+            leading: Icon(Icons.input),
+            title: Text('Welcome'),
+          ),
+          ListTile(
+            leading: Icon(Icons.verified_user),
+            title: Text('Profile'),
+          ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+          ),
+          ListTile(
+            leading: Icon(Icons.border_color),
+            title: Text('Feedback'),
+          ),
+          ListTile(
+            leading: Icon(Icons.exit_to_app),
+            title: Text('Logout'),
+          )
         ],
       ),
     );
