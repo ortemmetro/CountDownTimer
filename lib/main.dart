@@ -377,45 +377,90 @@ class _MyTimerState extends State<MyTimer> {
 }
 
 class NavDrawer extends StatelessWidget {
+  final _drawerTextStyle = TextStyle(fontSize: 20);
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: const <Widget>[
+    return Container(
+      width: 260,
+      child: Drawer(
+          child: Column(
+        children: <Widget>[
           DrawerHeader(
-            child: Text(
-              'Side menu',
-              style: TextStyle(color: Colors.black, fontSize: 25),
+            child: Stack(
+              children: [
+                Text(
+                  'MyTimer',
+                  style: TextStyle(
+                    fontSize: 35,
+                    letterSpacing: 3,
+                    foreground: Paint()
+                      ..style = PaintingStyle.stroke
+                      ..strokeWidth = 8
+                      ..color = Colors.black,
+                  ),
+                ),
+                const Text(
+                  'MyTimer',
+                  style: TextStyle(
+                    fontSize: 35,
+                    letterSpacing: 3,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
-            decoration: BoxDecoration(
-              color: Colors.green,
-              image: DecorationImage(
-                fit: BoxFit.fill,
-                image: AssetImage('assets/images/clockwatch.jpg'))),
+            decoration: const BoxDecoration(
+                color: Colors.green,
+                image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: AssetImage('assets/images/clockwatch.jpg'))),
           ),
-          ListTile(
-            leading: Icon(Icons.input),
-            title: Text('Welcome'),
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                  contentPadding: EdgeInsets.fromLTRB(15, 3, 10, 3),
+                  leading: Icon(
+                    Icons.verified_user,
+                    size: 30,
+                  ),
+                  title: Text('Profile', style: _drawerTextStyle),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.fromLTRB(15, 3, 10, 3),
+                  leading: Icon(
+                    Icons.settings,
+                    size: 30,
+                  ),
+                  title: Text('Settings', style: _drawerTextStyle),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.fromLTRB(15, 3, 10, 3),
+                  leading: Icon(
+                    Icons.border_color,
+                    size: 30,
+                  ),
+                  title: Text('Feedback', style: _drawerTextStyle),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.fromLTRB(15, 3, 10, 3),
+                      leading: Icon(
+                        Icons.exit_to_app,
+                        size: 30,
+                      ),
+                      title: Text('Logout', style: _drawerTextStyle),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          ListTile(
-            leading: Icon(Icons.verified_user),
-            title: Text('Profile'),
-          ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-          ),
-          ListTile(
-            leading: Icon(Icons.border_color),
-            title: Text('Feedback'),
-          ),
-          ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Logout'),
-          )
         ],
-      ),
+      )),
     );
   }
 }
