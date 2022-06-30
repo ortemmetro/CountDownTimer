@@ -386,6 +386,7 @@ class NavDrawer extends StatelessWidget {
           child: Column(
         children: <Widget>[
           DrawerHeader(
+            padding: EdgeInsets.all(45.0),
             child: Stack(
               children: [
                 Text(
@@ -411,7 +412,6 @@ class NavDrawer extends StatelessWidget {
               ],
             ),
             decoration: const BoxDecoration(
-                color: Colors.green,
                 image: DecorationImage(
                     fit: BoxFit.fill,
                     image: AssetImage('assets/images/clockwatch.jpg'))),
