@@ -420,34 +420,43 @@ class NavDrawer extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(15, 3, 10, 3),
+                  contentPadding: EdgeInsets.fromLTRB(15, 1.5, 10, 1.5),
                   leading: Icon(
                     Icons.verified_user,
                     size: 30,
                   ),
                   title: Text('Profile', style: _drawerTextStyle),
                 ),
+                Divider(
+                  thickness: 1.6,
+                ),
                 ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(15, 3, 10, 3),
+                  contentPadding: EdgeInsets.fromLTRB(15, 1.5, 10, 1.5),
                   leading: Icon(
                     Icons.settings,
                     size: 30,
                   ),
                   title: Text('Settings', style: _drawerTextStyle),
                 ),
+                Divider(
+                  thickness: 1.6,
+                ),
                 ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(15, 3, 10, 3),
+                  contentPadding: EdgeInsets.fromLTRB(15, 1.5, 10, 1.5),
                   leading: Icon(
                     Icons.border_color,
                     size: 30,
                   ),
                   title: Text('Feedback', style: _drawerTextStyle),
                 ),
+                Divider(
+                  thickness: 1.6,
+                ),
                 Expanded(
                   child: Align(
                     alignment: FractionalOffset.bottomCenter,
                     child: ListTile(
-                      contentPadding: EdgeInsets.fromLTRB(15, 3, 10, 3),
+                      contentPadding: EdgeInsets.fromLTRB(15, 1.5, 10, 1.5),
                       leading: Icon(
                         Icons.exit_to_app,
                         size: 30,
