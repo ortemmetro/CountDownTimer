@@ -1,75 +1,16 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:count_down_timer/main.dart';
+import 'package:flutter/material.dart';
 
-import 'create_timer_page.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          drawer: NavDrawer(),
-          appBar: AppBar(
-            title: Text('MyTimer'),
-            backgroundColor: Colors.black,
-          ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                color: Colors.white,
-                width: double.infinity,
-                height: 200,
-                child: Center(
-                  child: Text(
-                    'MyTimer',
-                    style: TextStyle(
-                      fontSize: 60,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.grey, Colors.white],
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.topCenter,
-                          ),
-                        ),
-                        child: MyTimer(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ));
-  }
-}
-
-class MyTimer extends StatefulWidget {
-  const MyTimer({Key? key}) : super(key: key);
+class CreateTimerPage extends StatefulWidget {
+  const CreateTimerPage({Key? key}) : super(key: key);
 
   @override
-  State<MyTimer> createState() => _MyTimerState();
+  State<CreateTimerPage> createState() => _CreateTimerPageState();
 }
 
-class _MyTimerState extends State<MyTimer> {
-  final _timerClockTextStyle = const TextStyle(fontSize: 50);
+class _CreateTimerPageState extends State<CreateTimerPage> {
+final _timerClockTextStyle = const TextStyle(fontSize: 50);
 
   Timer _timer = Timer(const Duration(seconds: 0), () {});
   double _startSeconds = 0;
@@ -103,7 +44,8 @@ class _MyTimerState extends State<MyTimer> {
 
   DateTime? _userDate;
 
-  void startTimer() {
+
+void startTimer() {
     setState(() {
       _differenceInTime = _userDate?.difference(DateTime.now()).inSeconds;
       _dateTime = _userDate;
@@ -235,15 +177,21 @@ class _MyTimerState extends State<MyTimer> {
     );
   }
 
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+         leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+         ), 
+        title: const Text('Create your timer'),
+      ),
+      body: Center(
       child: Column(
         children: [
           Container(
@@ -357,12 +305,7 @@ class _MyTimerState extends State<MyTimer> {
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.white),
                   ),
-                  onPressed: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const CreateTimerPage()),
-                    );
-                  },
+                  onPressed: startTimer,
                   child: Padding(
                     padding: EdgeInsets.all(12),
                     child: Text(
@@ -379,104 +322,7 @@ class _MyTimerState extends State<MyTimer> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class NavDrawer extends StatelessWidget {
-  final _drawerTextStyle = TextStyle(fontSize: 20);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 260,
-      child: Drawer(
-          child: Column(
-        children: <Widget>[
-          DrawerHeader(
-            padding: EdgeInsets.all(45.0),
-            child: Stack(
-              children: [
-                Text(
-                  'MyTimer',
-                  style: TextStyle(
-                    fontSize: 35,
-                    letterSpacing: 3,
-                    foreground: Paint()
-                      ..style = PaintingStyle.stroke
-                      ..strokeWidth = 8
-                      ..color = Colors.black,
-                  ),
-                ),
-                const Text(
-                  'MyTimer',
-                  style: TextStyle(
-                    fontSize: 35,
-                    letterSpacing: 3,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: AssetImage('assets/images/clockwatch.jpg'))),
-          ),
-          Expanded(
-            child: Column(
-              children: <Widget>[
-                ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(15, 1.5, 10, 1.5),
-                  leading: Icon(
-                    Icons.verified_user,
-                    size: 30,
-                  ),
-                  title: Text('Profile', style: _drawerTextStyle),
-                ),
-                Divider(
-                  thickness: 1.6,
-                ),
-                ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(15, 1.5, 10, 1.5),
-                  leading: Icon(
-                    Icons.settings,
-                    size: 30,
-                  ),
-                  title: Text('Settings', style: _drawerTextStyle),
-                ),
-                Divider(
-                  thickness: 1.6,
-                ),
-                ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(15, 1.5, 10, 1.5),
-                  leading: Icon(
-                    Icons.border_color,
-                    size: 30,
-                  ),
-                  title: Text('Feedback', style: _drawerTextStyle),
-                ),
-                Divider(
-                  thickness: 1.6,
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: FractionalOffset.bottomCenter,
-                    child: ListTile(
-                      contentPadding: EdgeInsets.fromLTRB(15, 1.5, 10, 1.5),
-                      leading: Icon(
-                        Icons.exit_to_app,
-                        size: 30,
-                      ),
-                      title: Text('Logout', style: _drawerTextStyle),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      )),
+    )
     );
   }
 }
