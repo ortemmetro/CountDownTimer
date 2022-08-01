@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return Scaffold(
       drawer: NavDrawer(),
       appBar: AppBar(
-        title: Text('MyTimer'),
+        title: Text('SuckMaDik'),
         backgroundColor: Colors.black,
       ),
       floatingActionButton: SizedBox(
