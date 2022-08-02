@@ -87,8 +87,8 @@ class MyTimer extends StatefulWidget {
 }
 
 class _MyTimerState extends State<MyTimer> {
-  final List<String> user_names = <String>['Artem', 'Yana'];
-  final List<int> colors = <int>[195, 123];
+  final List<String> user_names = [];
+  final List<int> colors = [195, 123];
 
   @override
   Widget build(BuildContext context) {
